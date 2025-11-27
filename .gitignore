@@ -39,3 +39,17 @@ Thumbs.db
 coverage/
 .cache/
 *.pem
+
+
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+crash.log
+.terraform.lock.hcl
+
+
+infra/.terraform/
+infra/terraform.tfstate
+infra/terraform.tfstate.*
+infra/crash.log
+infra/.terraform.lock.hcl
