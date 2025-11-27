@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "site" {
-    bucket = "cloud-resume-challenge"
+    bucket = "cristhian-resume-bucket"
 }
 
 resource "aws_s3_bucket_public_access_block" "site" {
