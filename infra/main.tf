@@ -31,6 +31,7 @@ resource "aws_cloudfront_origin_access_control" "oac" {
 # CloudFront Distribution
 ############################
 resource "aws_cloudfront_distribution" "cdn" {
+  comment             = "Distribute Cloud Resume" 
   enabled             = true
   default_root_object = "index.html"
 
@@ -95,4 +96,143 @@ resource "aws_s3_bucket_policy" "site" {
 ############################
 output "cloudfront_url" {
   value = aws_cloudfront_distribution.cdn.domain_name
+}
+
+
+############################
+# Define AWS DYNAMODB
+############################
+
+resource "aws_dynamodb_table" "visits_counter" {
+  name = "visits_counter"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key = "id"
+  attribute {
+    name = "id"
+    type = "S"
+  }
+}
+
+########################################
+# Define IAM ROLE FOR LAMBDA TO ASSUME
+########################################
+
+resource "aws_iam_role" "lambda_role" {
+  name = "visits-counter-lambda-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+
+
+
+########################################
+# Define IAM POLICY
+########################################
+
+resource "aws_iam_role_policy" "lambda_policy" {
+  name = "visits-counter-lambda-policy"
+  role = aws_iam_role.lambda_role.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "dynamodb:UpdateItem",
+          "dynamodb:GetItem"
+        ]
+        Effect = "Allow"
+        Resource = aws_dynamodb_table.visits_counter.arn
+      },
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Effect = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+
+
+########################################
+# Define lambda function
+########################################
+ 
+# Package the Lambda function code
+data "archive_file" "lambda_function" {
+  type        = "zip"
+  source_file = "${path.module}/../lambda/function.py"
+  output_path = "${path.module}/../lambda/function.zip"
+}
+
+resource "aws_lambda_function" "counter" {
+  function_name = "visits_counter_fn"
+  handler       = "function.handler"
+  runtime       = "python3.12"
+
+  filename         = data.archive_file.lambda_function.output_path
+  source_code_hash = data.archive_file.lambda_function.output_base64sha256
+
+  role = aws_iam_role.lambda_role.arn
+
+  environment {
+    variables = {
+      COUNTER_TABLE = aws_dynamodb_table.visits_counter.name
+    }
+  }
+}
+
+
+resource "aws_apigatewayv2_api" "counter_api" {
+  name          = "visits-counter-api"
+  protocol_type = "HTTP"
+}
+
+
+resource "aws_apigatewayv2_integration" "lambda_integration" {
+  api_id                 = aws_apigatewayv2_api.counter_api.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.counter.invoke_arn
+  payload_format_version = "2.0"
+}
+
+resource "aws_apigatewayv2_route" "post_visits" {
+  api_id    = aws_apigatewayv2_api.counter_api.id
+  route_key = "POST /visits"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
+}
+
+
+resource "aws_apigatewayv2_stage" "prod" {
+  api_id      = aws_apigatewayv2_api.counter_api.id
+  name        = "prod"
+  auto_deploy = true
+}
+
+resource "aws_lambda_permission" "apigw_invoke" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.counter.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.counter_api.execution_arn}/*/*"
+}
+
+
+output "api_gateway_url" {
+  value = aws_apigatewayv2_api.counter_api.api_endpoint
 }

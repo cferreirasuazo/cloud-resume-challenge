@@ -1,37 +1,57 @@
-import type React from "react"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-import Image from "next/image"
-import Link from "next/link"
-import Markdown from "react-markdown"
+import type React from "react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
+import Markdown from "react-markdown";
 
 interface Props {
-  title: string
-  href?: string
-  description: string
-  dates: string
-  tags: readonly string[]
-  link?: string
-  image?: string
-  video?: string
+  title: string;
+  href?: string;
+  description: string;
+  dates: string;
+  tags: readonly string[];
+  link?: string;
+  image?: string;
+  video?: string;
   links?: readonly {
-    icon: React.ReactNode
-    type: string
-    href: string
-  }[]
-  className?: string
+    icon: React.ReactNode;
+    type: string;
+    href: string;
+  }[];
+  className?: string;
 }
 
-export function ProjectCard({ title, href, description, dates, tags, link, image, video, links, className }: Props) {
+export function ProjectCard({
+  title,
+  href,
+  description,
+  dates,
+  tags,
+  link,
+  image,
+  video,
+  links,
+  className,
+}: Props) {
   return (
     <Card
       className={cn(
         "flex flex-col overflow-hidden border transition-all duration-300 ease-out hover:shadow-lg h-full bg-card/50 backdrop-blur-sm border-white/10",
-        className,
+        className
       )}
     >
-      <Link href={href || "#"} className={cn("block cursor-pointer", className)}>
+      <Link
+        href={href || "#"}
+        className={cn("block cursor-pointer", className)}
+      >
         {video && (
           <video
             src={video}
@@ -54,14 +74,16 @@ export function ProjectCard({ title, href, description, dates, tags, link, image
       </Link>
       <CardHeader className="px-4 pb-0 pt-4">
         <div className="space-y-1">
-          <CardTitle className="mt-1 text-base text-slate-100">{title}</CardTitle>
+          <CardTitle className="mt-1 text-base text-slate-100">
+            {title}
+          </CardTitle>
           <time className="font-sans text-xs text-slate-400">{dates}</time>
           <div className="hidden font-sans text-xs underline print:visible">
             {link?.replace("https://", "").replace("www.", "").replace("/", "")}
           </div>
-          <Markdown className="prose max-w-full text-pretty font-sans text-xs text-slate-300 dark:prose-invert">
-            {description}
-          </Markdown>
+          <div className="prose max-w-full text-pretty font-sans text-xs text-slate-300 dark:prose-invert">
+            <Markdown>{description}</Markdown>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="mt-auto flex flex-col px-4 pt-4">
@@ -94,5 +116,5 @@ export function ProjectCard({ title, href, description, dates, tags, link, image
         )}
       </CardFooter>
     </Card>
-  )
+  );
 }

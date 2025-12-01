@@ -1,19 +1,35 @@
-"use client"
-import { ProjectCard } from "@/components/project-card"
-import { ResumeCard } from "@/components/resume-card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { DATA } from "@/lib/data"
-import { motion } from "framer-motion"
-import Link from "next/link"
+"use client";
+import { ProjectCard } from "@/components/project-card";
+import { ResumeCard } from "@/components/resume-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { DATA } from "@/lib/data";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { useEffect } from "react";
 
 // Simple blur-in animation for sections
 const blurIn = {
   hidden: { filter: "blur(10px)", opacity: 0, y: 20 },
-  visible: { filter: "blur(0px)", opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
-}
+  visible: {
+    filter: "blur(0px)",
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
+};
 
 export default function Page() {
+  // <-- ADD THIS useEffect
+  useEffect(() => {
+    fetch(
+      "https://19pyr48o48.execute-api.us-east-1.amazonaws.com/prod/visits",
+      {
+        method: "POST",
+      }
+    ).catch(() => {});
+  }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center bg-[#0a192f] text-slate-300 font-sans selection:bg-teal-300 selection:text-slate-900">
       <div className="w-full max-w-3xl space-y-24 px-6 py-12 sm:py-24">
@@ -30,11 +46,19 @@ export default function Page() {
               <h1 className="font-bold text-4xl tracking-tighter sm:text-5xl xl:text-6xl/none text-slate-100">
                 Hi, I'm {DATA.name.split(" ")[0]} 👋
               </h1>
-              <h2 className="text-xl font-medium text-teal-300">{DATA.description}</h2>
-              <p className="max-w-[600px] text-base text-slate-400 md:text-lg leading-relaxed">{DATA.summary}</p>
+              <h2 className="text-xl font-medium text-teal-300">
+                {DATA.description}
+              </h2>
+              <p className="max-w-[600px] text-base text-slate-400 md:text-lg leading-relaxed">
+                {DATA.summary}
+              </p>
               <div className="flex gap-4 mt-2">
                 {Object.entries(DATA.contact.social).map(([key, value]) => (
-                  <Link key={key} href={value.url} className="text-slate-400 hover:text-teal-300 transition-colors">
+                  <Link
+                    key={key}
+                    href={value.url}
+                    className="text-slate-400 hover:text-teal-300 transition-colors"
+                  >
                     <value.icon className="size-6" />
                     <span className="sr-only">{value.name}</span>
                   </Link>
@@ -42,7 +66,10 @@ export default function Page() {
               </div>
             </div>
             <Avatar className="size-32 border-2 border-teal-300/20 shadow-xl">
-              <AvatarImage alt={DATA.name} src={DATA.avatarUrl || "/placeholder.svg"} />
+              <AvatarImage
+                alt={DATA.name}
+                src={DATA.avatarUrl || "/placeholder.svg"}
+              />
               <AvatarFallback>{DATA.initials}</AvatarFallback>
             </Avatar>
           </div>
@@ -61,7 +88,8 @@ export default function Page() {
         >
           <div className="flex flex-col items-start gap-2">
             <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl text-slate-100 flex items-center gap-2">
-              <span className="text-teal-300 text-xl font-mono">01.</span> Work Experience
+              <span className="text-teal-300 text-xl font-mono">01.</span> Work
+              Experience
             </h2>
             <div className="w-full h-px bg-slate-800 my-4" />
           </div>
@@ -91,7 +119,8 @@ export default function Page() {
         >
           <div className="flex flex-col items-start gap-2">
             <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl text-slate-100 flex items-center gap-2">
-              <span className="text-teal-300 text-xl font-mono">02.</span> Education
+              <span className="text-teal-300 text-xl font-mono">02.</span>{" "}
+              Education
             </h2>
             <div className="w-full h-px bg-slate-800 my-4" />
           </div>
@@ -119,7 +148,8 @@ export default function Page() {
         >
           <div className="flex flex-col items-start gap-2">
             <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl text-slate-100 flex items-center gap-2">
-              <span className="text-teal-300 text-xl font-mono">03.</span> Skills
+              <span className="text-teal-300 text-xl font-mono">03.</span>{" "}
+              Skills
             </h2>
             <div className="w-full h-px bg-slate-800 my-4" />
           </div>
@@ -146,7 +176,8 @@ export default function Page() {
         >
           <div className="flex flex-col items-start gap-2">
             <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl text-slate-100 flex items-center gap-2">
-              <span className="text-teal-300 text-xl font-mono">04.</span> Featured Projects
+              <span className="text-teal-300 text-xl font-mono">04.</span>{" "}
+              Featured Projects
             </h2>
             <div className="w-full h-px bg-slate-800 my-4" />
           </div>
@@ -177,11 +208,16 @@ export default function Page() {
           className="flex flex-col items-center justify-center gap-4 text-center py-12"
         >
           <div className="space-y-3">
-            <div className="inline-block rounded-lg bg-slate-800 px-3 py-1 text-sm text-teal-300">What's Next?</div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-slate-100">Get in Touch</h2>
+            <div className="inline-block rounded-lg bg-slate-800 px-3 py-1 text-sm text-teal-300">
+              What's Next?
+            </div>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-slate-100">
+              Get in Touch
+            </h2>
             <p className="mx-auto max-w-[600px] text-slate-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try
-              my best to get back to you!
+              I'm currently looking for new opportunities. Whether you have a
+              question or just want to say hi, I'll try my best to get back to
+              you!
             </p>
           </div>
           <Link
@@ -197,5 +233,5 @@ export default function Page() {
         </footer>
       </div>
     </main>
-  )
+  );
 }
