@@ -1,7 +1,7 @@
 import { Github, Linkedin, Mail, Twitter } from "lucide-react";
 
 export const DATA = {
-  name: "Cristhian Ferreira",
+  name: "Tu Real Dulce Veneno",
   initials: "CF",
   location: "Santo Domingo, Dominican Republic",
   locationLink: "https://www.google.com/maps/place/Santo+Domingo",
