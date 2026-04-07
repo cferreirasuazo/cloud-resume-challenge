@@ -9,3 +9,9 @@ When pushing terraform files, make sure to not include .terraform
 if you are going to use aws crdentials outside Aws, make sure to specify it when creating the credentials that they are going tio be used outside like in github actions
 
 Cloudfront allows you to distribute your
+
+Terraform saves the exact plan to a file called tfplan.
+
+`terraform plan -out=tfplan`
+
+This guarantees Terraform executes precisely the actions you reviewed, even if the environment changes between the plan and apply steps.
