@@ -1,7 +1,7 @@
 import { Github, Linkedin, Mail, Twitter } from "lucide-react";
 
 export const DATA = {
-  name: "Tu Real Dulce Veneno",
+  name: "Cristhian Ferreira",
   initials: "CF",
   location: "Santo Domingo, Dominican Republic",
   locationLink: "https://www.google.com/maps/place/Santo+Domingo",
@@ -9,7 +9,7 @@ export const DATA = {
     "Backend Engineer. I build scalable, secure APIs and AI-powered systems for real-world applications.",
   summary:
     "Backend Engineer with 5+ years of experience building high-performance systems in healthcare, e‑commerce, and education. Specialized in Python, FastAPI, Django, AWS, and Generative AI. Strong engineering discipline using TDD, clean architecture, CI/CD, and cloud‑native tooling.",
-  avatarUrl: "/profile.png",
+  avatarUrl: "/profile.JPG",
   skills: [
     "Python",
     "FastAPI",
@@ -34,7 +34,7 @@ export const DATA = {
     social: {
       GitHub: {
         name: "GitHub",
-        url: "https://github.com/cferreiradev",
+        url: "https://github.com/cferreirasuazo",
         icon: Github,
       },
       LinkedIn: {
