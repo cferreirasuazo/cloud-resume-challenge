@@ -41,7 +41,7 @@ export default function Page() {
           <div className="flex flex-col-reverse gap-8 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-col gap-4 text-left">
               <h1 className="font-bold text-4xl tracking-tighter sm:text-5xl xl:text-6xl/none text-slate-100">
-                Hi, I'm {DATA.name.split(" ")[0]} 👋
+                {"Hi, I'm"} {DATA.name.split(" ")[0]} 👋
               </h1>
               <h2 className="text-xl font-medium text-teal-300">
                 {DATA.description}
@@ -206,15 +206,13 @@ export default function Page() {
         >
           <div className="space-y-3">
             <div className="inline-block rounded-lg bg-slate-800 px-3 py-1 text-sm text-teal-300">
-              What's Next?
+              {"What's Next?"}
             </div>
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-slate-100">
               Get in Touch
             </h2>
             <p className="mx-auto max-w-[600px] text-slate-400 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              I'm currently looking for new opportunities. Whether you have a
-              question or just want to say hi, I'll try my best to get back to
-              you!
+              {"I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!"}
             </p>
           </div>
           <Link
