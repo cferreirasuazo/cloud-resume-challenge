@@ -22,12 +22,9 @@ const blurIn = {
 export default function Page() {
   // <-- ADD THIS useEffect
   useEffect(() => {
-    fetch(
-      "https://19pyr48o48.execute-api.us-east-1.amazonaws.com/prod/visits",
-      {
-        method: "POST",
-      }
-    ).catch(() => {});
+    if (process.env.NEXT_PUBLIC_API_URL) {
+      fetch(process.env.NEXT_PUBLIC_API_URL, { method: "POST" }).catch(() => {});
+    }
   }, []);
 
   return (

@@ -1,5 +1,77 @@
 # Cloud Resume Bootcamp – AWS Deployment
 
+## Fork & Deploy Your Own Version
+
+This project is designed to be a reusable template. Follow these steps to deploy it under your own domain and AWS account.
+
+### Prerequisites
+
+- AWS account with an IAM user that has permissions for S3, CloudFront, Route 53, ACM, Lambda, DynamoDB, and API Gateway
+- A domain registered and a **Route 53 hosted zone already created** for it
+- [Terraform CLI](https://developer.hashicorp.com/terraform/install) ≥ 1.0
+- Node.js 20 + [pnpm](https://pnpm.io/installation)
+
+### Step 1 — Configure infrastructure variables
+
+```bash
+cp infra/terraform.tfvars.example infra/terraform.tfvars
+```
+
+Edit `infra/terraform.tfvars` with your values:
+
+```hcl
+bucket_name     = "your-unique-bucket-name"
+domain_name     = "yourdomain.com"
+www_domain_name = "www.yourdomain.com"
+aws_region      = "us-east-1"
+```
+
+### Step 2 — Deploy infrastructure
+
+```bash
+cd infra
+terraform init
+terraform plan
+terraform apply
+```
+
+Note the four output values printed at the end — you will need them in the next steps.
+
+### Step 3 — Configure local development
+
+```bash
+cp .env.local.example .env.local
+```
+
+Paste the `api_gateway_url` output from Terraform as `NEXT_PUBLIC_API_URL` in `.env.local`.
+
+### Step 4 — Configure GitHub Actions
+
+In your repository go to **Settings → Secrets and variables → Actions** and add:
+
+| Type | Name | Value |
+|------|------|-------|
+| Secret | `AWS_ACCESS_KEY_ID` | Your IAM user access key |
+| Secret | `AWS_SECRET_ACCESS_KEY` | Your IAM user secret key |
+| Secret | `NEXT_PUBLIC_API_URL` | `api_gateway_url` output from Terraform |
+| Secret | `CF_DISTRIBUTION_ID` | `cloudfront_distribution_id` output from Terraform |
+| Variable | `S3_BUCKET` | `s3_bucket_name` output from Terraform |
+| Variable | `AWS_REGION` | Your AWS region (e.g. `us-east-1`) |
+
+### Step 5 — Customize resume content
+
+Edit [`lib/data.tsx`](lib/data.tsx) with your own name, work history, education, skills, and projects.
+
+### Step 6 — Push and deploy
+
+```bash
+git push origin main
+```
+
+GitHub Actions will build the site, run smoke tests, upload to S3, and invalidate the CloudFront cache automatically.
+
+---
+
 This project is a cloud-hosted personal resume built with Next.js and deployed on AWS using an automated, fully serverless architecture. It showcases hands-on cloud engineering skills across frontend hosting, CDN distribution, DNS management, API integration, CI/CD, and modern Infrastructure as Code using Terraform.
 
 ## Architecture Overview

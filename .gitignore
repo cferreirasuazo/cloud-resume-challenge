@@ -44,6 +44,7 @@ coverage/
 .terraform/
 terraform.tfstate
 terraform.tfstate.*
+terraform.tfvars
 crash.log
 .terraform.lock.hcl
 
@@ -51,5 +52,8 @@ crash.log
 infra/.terraform/
 infra/terraform.tfstate
 infra/terraform.tfstate.*
+infra/terraform.tfvars
 infra/crash.log
 infra/.terraform.lock.hcl
+
+.claude

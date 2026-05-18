@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
 ################################
@@ -7,7 +7,7 @@ provider "aws" {
 ################################
 
 resource "aws_s3_bucket" "site" {
-  bucket = "cristhian-resume-bucket"
+  bucket = var.bucket_name
 }
 
 resource "aws_s3_bucket_ownership_controls" "site" {
@@ -42,11 +42,11 @@ resource "aws_cloudfront_origin_access_control" "oac" {
 ################################
 
 resource "aws_acm_certificate" "site_cert" {
-  domain_name       = "www.cristhianferreiracloud.com"
+  domain_name       = var.www_domain_name
   validation_method = "DNS"
 
   subject_alternative_names = [
-    "cristhianferreiracloud.com"
+    var.domain_name
   ]
 
   lifecycle {
@@ -59,7 +59,7 @@ resource "aws_acm_certificate" "site_cert" {
 ################################
 
 data "aws_route53_zone" "main" {
-  name         = "cristhianferreiracloud.com"
+  name         = var.domain_name
   private_zone = false
 }
 
@@ -129,8 +129,8 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 
   aliases = [
-    "www.cristhianferreiracloud.com",
-    "cristhianferreiracloud.com"
+    var.www_domain_name,
+    var.domain_name
   ]
 
   viewer_certificate {
@@ -180,7 +180,7 @@ resource "aws_s3_bucket_policy" "site" {
 resource "aws_route53_record" "www" {
 
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "www.cristhianferreiracloud.com"
+  name    = var.www_domain_name
   type    = "A"
 
   alias {
@@ -193,7 +193,7 @@ resource "aws_route53_record" "www" {
 resource "aws_route53_record" "root" {
 
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "cristhianferreiracloud.com"
+  name    = var.domain_name
   type    = "A"
 
   alias {
@@ -338,8 +338,8 @@ resource "aws_apigatewayv2_api" "counter_api" {
 
   cors_configuration {
     allow_origins = ["*"]
-    allow_methods = ["GET"]
-    allow_headers = ["*"]
+    allow_methods = ["POST"]
+    allow_headers = ["Content-Type"]
   }
 }
 
@@ -355,7 +355,7 @@ resource "aws_apigatewayv2_integration" "lambda_integration" {
 resource "aws_apigatewayv2_route" "get_visits" {
 
   api_id    = aws_apigatewayv2_api.counter_api.id
-  route_key = "GET /visits"
+  route_key = "POST /visits"
 
   target = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }

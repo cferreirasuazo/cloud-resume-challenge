@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is gitignored — never commit it with real values.
+
+bucket_name     = "your-unique-bucket-name"
+domain_name     = "yourdomain.com"
+www_domain_name = "www.yourdomain.com"
+aws_region      = "us-east-1"

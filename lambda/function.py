@@ -3,10 +3,14 @@ import json
 import boto3
 
 dynamodb = boto3.client("dynamodb")
-TABLE = os.environ.get("COUNTER_TABLE", "VisitsTable")  # set as env var in Lambda
+TABLE = os.environ.get("COUNTER_TABLE", "VisitsTable")
+
+CORS_HEADERS = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+}
 
 def handler(event, context):
-    # increment the single counter item and return the new value
     try:
         resp = dynamodb.update_item(
             TableName=TABLE,
@@ -19,11 +23,12 @@ def handler(event, context):
         new_count = int(resp["Attributes"]["count"]["N"])
         return {
             "statusCode": 200,
-            "headers": {"Content-Type": "application/json"},
-            "body": json.dumps({"count": new_count})
+            "headers": CORS_HEADERS,
+            "body": json.dumps({"count": new_count}),
         }
     except Exception as e:
         return {
             "statusCode": 500,
-            "body": json.dumps({"error": str(e)})
+            "headers": CORS_HEADERS,
+            "body": json.dumps({"error": str(e)}),
         }
